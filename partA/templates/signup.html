@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<style> 
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
+*{margin:0;padding:0;}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+
+}
+
+li {
+    float: right;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: right;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+background-color:#4CAF50;
+}
+body{
+  background:#567;
+  font-family:'Open Sans',sans-serif;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+
+}
+
+li {
+    float: right;
+}
+
+li a {
+    display: block;
+    color: white;
+    text-align: right;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+a:hover:not(.active) {
+    background-color: #111;
+}
+
+.active {
+background-color:#4CAF50;
+}
+
+.button{
+  width:100px;
+  background:#3399cc;
+  display:block;
+  margin:0 auto;
+  margin-top:1%;
+  padding:10px;
+  text-align:center;
+  text-decoration:none;
+  color:#fff;
+  cursor:pointer;
+  transition:background .3s;
+  -webkit-transition:background .3s;
+}
+
+.button:hover{
+  background:#2288bb;
+}
+
+#login{
+  width:400px;
+  margin:0 auto;
+  margin-top:8px;
+  margin-bottom:2%;
+  transition:opacity 1s;
+  -webkit-transition:opacity 1s;
+}
+
+#triangle{
+  width:0;
+  border-top:12x solid transparent;
+  border-right:12px solid transparent;
+  border-bottom:12px solid #3399cc;
+  border-left:12px solid transparent;
+  margin:0 auto;
+}
+
+#login h1{
+  background:#3399cc;
+  padding:20px 0;
+  font-size:140%;
+  font-weight:300;
+  text-align:center;
+  color:#fff;
+}
+
+form{
+  background:#f0f0f0;
+  padding:6% 4%;
+}
+
+input[type="email"],input[type="password"],input[type="text"]{
+  width:92%;
+  background:#fff;
+  margin-bottom:4%;
+  border:1px solid #ccc;
+  padding:4%;
+  font-family:'Open Sans',sans-serif;
+  font-size:95%;
+  color:#555;
+}
+
+input[type="submit"]{
+  width:100%;
+  background:#3399cc;
+  border:0;
+  padding:4%;
+  font-family:'Open Sans',sans-serif;
+  font-size:100%;
+  color:#fff;
+  cursor:pointer;
+  transition:background .3s;
+  -webkit-transition:background .3s;
+}
+
+input[type="submit"]:hover{
+  background:#2288bb;
+}
+
+</style>
+
+  <meta charset="UTF-8">
+
+  <title>CodePen - Login Form</title>
+
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}" media="screen" type="text/css" />
+
+</head>
+
+<body>
+<ul style="position:relative; top:0; right:0;">
+		<li><a class="active" href="#home">Home</a></li>
+		<li><a href="{{url_for('signup')}}">Sign Up</a></li>
+		<li><a href="{{url_for('signin')}}">Dashboard</a></li>
+		<li><a href="#contact">Contact</a></li>
+		<li><a href="#about">About</a></li>
+		</ul>
+		
+	{% for message in form.email.errors %}
+	<div class="flash">{{message}}</div>
+	{% endfor %}
+
+	{%  for message in form.password.errors %}
+	<div class="flash">{{message}}</div>
+	{% endfor %}
+
+  <span href="#" class="button" id="toggle-login">Sign Up</span>
+  
+
+<div id="login">
+  <div id="triangle"></div>
+  <h1>Sign in</h1>
+  <form action ="{{url_for('signup')}}" method = post>
+	{{ form.hidden_tag()}}
+	
+	{{form.firstname.label}}<br>
+	{{form.firstname}}<br>
+	
+	{{form.lastname.label}}<br>
+	{{form.lastname}}<br>
+	
+	{{form.email.label}}<br>
+    {{form.email(placeholder="Email")}}<br>
+	
+	{{form.password.label}}<br>
+    {{form.password(placeholder="Password")}}<br>
+	
+    {{form.submit}}<br>
+  </form>
+</div>
+
+  <script src='http://codepen.io/assets/libs/fullpage/jquery.js'></script>
+
+  <script src="{{url_for('static', filename='js/index.js')}}"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,2939 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css" />
+        <link rel="stylesheet" type="text/css" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/MarkerCluster.css" />
+        <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
+        <link rel="stylesheet" href="css/Control.OSMGeocoder.css" />
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet-heat.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/OSMBuildings-Leaflet.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/leaflet-tilelayer-wmts.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/Control.OSMGeocoder.js"></script>
+        <script src="js/leaflet.markercluster.js"></script>
+        <script src="data/UnitechInfospace0.js"></script>
+        <script src="data/UnitechCyberHub1.js"></script>
+        <script src="data/SouthPointMall2.js"></script>
+        <script src="data/Sector313.js"></script>
+        <script src="data/Sector294.js"></script>
+        <script src="data/Sector155.js"></script>
+        <script src="data/SaharaMall6.js"></script>
+        <script src="data/RahejaMall7.js"></script>
+        <script src="data/QutubPlaza8.js"></script>
+        <script src="data/OmaxeCityMall9.js"></script>
+        <script src="data/Ninex10.js"></script>
+        <script src="data/MGFMegaCity11.js"></script>
+        <script src="data/Metropolitan12.js"></script>
+        <script src="data/HongKongBazaar13.js"></script>
+        <script src="data/GoodEarth14.js"></script>
+        <script src="data/GlobalFoyer15.js"></script>
+        <script src="data/GalleriaMarket16.js"></script>
+        <script src="data/ErosCity17.js"></script>
+        <script src="data/DLFStarMall18.js"></script>
+        <script src="data/DLFMegaMall19.js"></script>
+        <script src="data/DLFCyberHub20.js"></script>
+        <script src="data/CentralPlaza21.js"></script>
+        <script src="data/CelebrationMall22.js"></script>
+        <script src="data/BaaniSquare23.js"></script>
+        <script src="data/AnsalPlaza24.js"></script>
+        <script src="data/Ambiencemall25.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+
+            if (e.target.feature.geometry.type === 'LineString') {
+              highlightLayer.setStyle({
+                color: '#ffff00',
+              });
+            } else {
+              highlightLayer.setStyle({
+                fillColor: '#ffff00',
+                fillOpacity: 1
+              });
+            }
+            highlightLayer.openPopup();
+        }
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:20, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.addAttribution('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a>');
+        var bounds_group = new L.featureGroup([]);
+        var basemap0 = L.tileLayer('http://{s}.www.toolserver.org/tiles/bw-mapnik/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 20
+        });
+        basemap0.addTo(map);
+        var basemap1 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+            maxZoom: 20
+        });
+        basemap1.addTo(map);
+        var basemap2 = L.tileLayer('http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>,Tiles courtesy of <a href="http://hot.openstreetmap.org/" target="_blank">Humanitarian OpenStreetMap Team</a>',
+            maxZoom: 20
+        });
+        basemap2.addTo(map);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        function geoJson2heat(geojson, weight) {
+          return geojson.features.map(function(feature) {
+            return [
+              feature.geometry.coordinates[1],
+              feature.geometry.coordinates[0],
+              feature.properties[weight]
+            ];
+          });
+        }
+        function pop_UnitechInfospace0(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_UnitechInfospace0(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_UnitechInfospace0() {
+            return {
+                pane: 'pane_UnitechInfospace0',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(166,227,42,0.5)',
+            }
+        }
+        map.createPane('pane_UnitechInfospace0');
+        map.getPane('pane_UnitechInfospace0').style.zIndex = 600;
+        map.getPane('pane_UnitechInfospace0').style['mix-blend-mode'] = 'normal';
+    var layer_UnitechInfospace0 = new L.geoJson(json_UnitechInfospace0, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_UnitechInfospace0',
+        onEachFeature: pop_UnitechInfospace0,
+        style: style_UnitechInfospace0
+    });
+        bounds_group.addLayer(layer_UnitechInfospace0);
+        map.addLayer(layer_UnitechInfospace0);
+        function pop_UnitechCyberHub1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_UnitechCyberHub1(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_UnitechCyberHub1() {
+            return {
+                pane: 'pane_UnitechCyberHub1',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(66,131,69,0.5)',
+            }
+        }
+        map.createPane('pane_UnitechCyberHub1');
+        map.getPane('pane_UnitechCyberHub1').style.zIndex = 601;
+        map.getPane('pane_UnitechCyberHub1').style['mix-blend-mode'] = 'normal';
+    var layer_UnitechCyberHub1 = new L.geoJson(json_UnitechCyberHub1, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_UnitechCyberHub1',
+        onEachFeature: pop_UnitechCyberHub1,
+        style: style_UnitechCyberHub1
+    });
+        bounds_group.addLayer(layer_UnitechCyberHub1);
+        map.addLayer(layer_UnitechCyberHub1);
+        function pop_SouthPointMall2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_SouthPointMall2(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_SouthPointMall2() {
+            return {
+                pane: 'pane_SouthPointMall2',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(91,138,76,0.5)',
+            }
+        }
+        map.createPane('pane_SouthPointMall2');
+        map.getPane('pane_SouthPointMall2').style.zIndex = 602;
+        map.getPane('pane_SouthPointMall2').style['mix-blend-mode'] = 'normal';
+    var layer_SouthPointMall2 = new L.geoJson(json_SouthPointMall2, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_SouthPointMall2',
+        onEachFeature: pop_SouthPointMall2,
+        style: style_SouthPointMall2
+    });
+        bounds_group.addLayer(layer_SouthPointMall2);
+        map.addLayer(layer_SouthPointMall2);
+        function pop_Sector313(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_Sector313(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Sector313() {
+            return {
+                pane: 'pane_Sector313',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(238,145,6,0.5)',
+            }
+        }
+        map.createPane('pane_Sector313');
+        map.getPane('pane_Sector313').style.zIndex = 603;
+        map.getPane('pane_Sector313').style['mix-blend-mode'] = 'normal';
+    var layer_Sector313 = new L.geoJson(json_Sector313, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_Sector313',
+        onEachFeature: pop_Sector313,
+        style: style_Sector313
+    });
+        bounds_group.addLayer(layer_Sector313);
+        map.addLayer(layer_Sector313);
+        function pop_Sector294(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_Sector294(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Sector294() {
+            return {
+                pane: 'pane_Sector294',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(167,99,54,0.5)',
+            }
+        }
+        map.createPane('pane_Sector294');
+        map.getPane('pane_Sector294').style.zIndex = 604;
+        map.getPane('pane_Sector294').style['mix-blend-mode'] = 'normal';
+    var layer_Sector294 = new L.geoJson(json_Sector294, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_Sector294',
+        onEachFeature: pop_Sector294,
+        style: style_Sector294
+    });
+        bounds_group.addLayer(layer_Sector294);
+        map.addLayer(layer_Sector294);
+        function pop_Sector155(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_Sector155(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Sector155() {
+            return {
+                pane: 'pane_Sector155',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(50,68,137,0.5)',
+            }
+        }
+        map.createPane('pane_Sector155');
+        map.getPane('pane_Sector155').style.zIndex = 605;
+        map.getPane('pane_Sector155').style['mix-blend-mode'] = 'normal';
+    var layer_Sector155 = new L.geoJson(json_Sector155, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_Sector155',
+        onEachFeature: pop_Sector155,
+        style: style_Sector155
+    });
+        bounds_group.addLayer(layer_Sector155);
+        map.addLayer(layer_Sector155);
+        function pop_SaharaMall6(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_SaharaMall6(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_SaharaMall6() {
+            return {
+                pane: 'pane_SaharaMall6',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(228,134,111,0.5)',
+            }
+        }
+        map.createPane('pane_SaharaMall6');
+        map.getPane('pane_SaharaMall6').style.zIndex = 606;
+        map.getPane('pane_SaharaMall6').style['mix-blend-mode'] = 'normal';
+    var layer_SaharaMall6 = new L.geoJson(json_SaharaMall6, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_SaharaMall6',
+        onEachFeature: pop_SaharaMall6,
+        style: style_SaharaMall6
+    });
+        bounds_group.addLayer(layer_SaharaMall6);
+        map.addLayer(layer_SaharaMall6);
+        function pop_RahejaMall7(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_RahejaMall7(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_RahejaMall7() {
+            return {
+                pane: 'pane_RahejaMall7',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(43,134,1,0.5)',
+            }
+        }
+        map.createPane('pane_RahejaMall7');
+        map.getPane('pane_RahejaMall7').style.zIndex = 607;
+        map.getPane('pane_RahejaMall7').style['mix-blend-mode'] = 'normal';
+    var layer_RahejaMall7 = new L.geoJson(json_RahejaMall7, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_RahejaMall7',
+        onEachFeature: pop_RahejaMall7,
+        style: style_RahejaMall7
+    });
+        bounds_group.addLayer(layer_RahejaMall7);
+        map.addLayer(layer_RahejaMall7);
+        function pop_QutubPlaza8(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_QutubPlaza8(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_QutubPlaza8() {
+            return {
+                pane: 'pane_QutubPlaza8',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(94,249,112,0.5)',
+            }
+        }
+        map.createPane('pane_QutubPlaza8');
+        map.getPane('pane_QutubPlaza8').style.zIndex = 608;
+        map.getPane('pane_QutubPlaza8').style['mix-blend-mode'] = 'normal';
+    var layer_QutubPlaza8 = new L.geoJson(json_QutubPlaza8, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_QutubPlaza8',
+        onEachFeature: pop_QutubPlaza8,
+        style: style_QutubPlaza8
+    });
+        bounds_group.addLayer(layer_QutubPlaza8);
+        map.addLayer(layer_QutubPlaza8);
+        function pop_OmaxeCityMall9(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_OmaxeCityMall9(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_OmaxeCityMall9() {
+            return {
+                pane: 'pane_OmaxeCityMall9',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(187,53,106,0.5)',
+            }
+        }
+        map.createPane('pane_OmaxeCityMall9');
+        map.getPane('pane_OmaxeCityMall9').style.zIndex = 609;
+        map.getPane('pane_OmaxeCityMall9').style['mix-blend-mode'] = 'normal';
+    var layer_OmaxeCityMall9 = new L.geoJson(json_OmaxeCityMall9, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_OmaxeCityMall9',
+        onEachFeature: pop_OmaxeCityMall9,
+        style: style_OmaxeCityMall9
+    });
+        bounds_group.addLayer(layer_OmaxeCityMall9);
+        map.addLayer(layer_OmaxeCityMall9);
+        function pop_Ninex10(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_Ninex10(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Ninex10() {
+            return {
+                pane: 'pane_Ninex10',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(15,105,184,0.5)',
+            }
+        }
+        map.createPane('pane_Ninex10');
+        map.getPane('pane_Ninex10').style.zIndex = 610;
+        map.getPane('pane_Ninex10').style['mix-blend-mode'] = 'normal';
+    var layer_Ninex10 = new L.geoJson(json_Ninex10, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_Ninex10',
+        onEachFeature: pop_Ninex10,
+        style: style_Ninex10
+    });
+        bounds_group.addLayer(layer_Ninex10);
+        map.addLayer(layer_Ninex10);
+        function pop_MGFMegaCity11(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_MGFMegaCity11(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_MGFMegaCity11() {
+            return {
+                pane: 'pane_MGFMegaCity11',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(127,19,139,0.5)',
+            }
+        }
+        map.createPane('pane_MGFMegaCity11');
+        map.getPane('pane_MGFMegaCity11').style.zIndex = 611;
+        map.getPane('pane_MGFMegaCity11').style['mix-blend-mode'] = 'normal';
+    var layer_MGFMegaCity11 = new L.geoJson(json_MGFMegaCity11, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_MGFMegaCity11',
+        onEachFeature: pop_MGFMegaCity11,
+        style: style_MGFMegaCity11
+    });
+        bounds_group.addLayer(layer_MGFMegaCity11);
+        map.addLayer(layer_MGFMegaCity11);
+        function pop_Metropolitan12(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_Metropolitan12(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Metropolitan12() {
+            return {
+                pane: 'pane_Metropolitan12',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(189,192,98,0.5)',
+            }
+        }
+        map.createPane('pane_Metropolitan12');
+        map.getPane('pane_Metropolitan12').style.zIndex = 612;
+        map.getPane('pane_Metropolitan12').style['mix-blend-mode'] = 'normal';
+    var layer_Metropolitan12 = new L.geoJson(json_Metropolitan12, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_Metropolitan12',
+        onEachFeature: pop_Metropolitan12,
+        style: style_Metropolitan12
+    });
+        bounds_group.addLayer(layer_Metropolitan12);
+        map.addLayer(layer_Metropolitan12);
+        function pop_HongKongBazaar13(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_HongKongBazaar13(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_HongKongBazaar13() {
+            return {
+                pane: 'pane_HongKongBazaar13',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(151,24,62,0.5)',
+            }
+        }
+        map.createPane('pane_HongKongBazaar13');
+        map.getPane('pane_HongKongBazaar13').style.zIndex = 613;
+        map.getPane('pane_HongKongBazaar13').style['mix-blend-mode'] = 'normal';
+    var layer_HongKongBazaar13 = new L.geoJson(json_HongKongBazaar13, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_HongKongBazaar13',
+        onEachFeature: pop_HongKongBazaar13,
+        style: style_HongKongBazaar13
+    });
+        bounds_group.addLayer(layer_HongKongBazaar13);
+        map.addLayer(layer_HongKongBazaar13);
+        function pop_GoodEarth14(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_GoodEarth14(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_GoodEarth14() {
+            return {
+                pane: 'pane_GoodEarth14',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(214,210,153,0.5)',
+            }
+        }
+        map.createPane('pane_GoodEarth14');
+        map.getPane('pane_GoodEarth14').style.zIndex = 614;
+        map.getPane('pane_GoodEarth14').style['mix-blend-mode'] = 'normal';
+    var layer_GoodEarth14 = new L.geoJson(json_GoodEarth14, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_GoodEarth14',
+        onEachFeature: pop_GoodEarth14,
+        style: style_GoodEarth14
+    });
+        bounds_group.addLayer(layer_GoodEarth14);
+        map.addLayer(layer_GoodEarth14);
+        function pop_GlobalFoyer15(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_GlobalFoyer15(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_GlobalFoyer15() {
+            return {
+                pane: 'pane_GlobalFoyer15',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(54,147,55,0.5)',
+            }
+        }
+        map.createPane('pane_GlobalFoyer15');
+        map.getPane('pane_GlobalFoyer15').style.zIndex = 615;
+        map.getPane('pane_GlobalFoyer15').style['mix-blend-mode'] = 'normal';
+    var layer_GlobalFoyer15 = new L.geoJson(json_GlobalFoyer15, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_GlobalFoyer15',
+        onEachFeature: pop_GlobalFoyer15,
+        style: style_GlobalFoyer15
+    });
+        bounds_group.addLayer(layer_GlobalFoyer15);
+        map.addLayer(layer_GlobalFoyer15);
+        function pop_GalleriaMarket16(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_GalleriaMarket16(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_GalleriaMarket16() {
+            return {
+                pane: 'pane_GalleriaMarket16',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(114,186,158,0.5)',
+            }
+        }
+        map.createPane('pane_GalleriaMarket16');
+        map.getPane('pane_GalleriaMarket16').style.zIndex = 616;
+        map.getPane('pane_GalleriaMarket16').style['mix-blend-mode'] = 'normal';
+    var layer_GalleriaMarket16 = new L.geoJson(json_GalleriaMarket16, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_GalleriaMarket16',
+        onEachFeature: pop_GalleriaMarket16,
+        style: style_GalleriaMarket16
+    });
+        bounds_group.addLayer(layer_GalleriaMarket16);
+        map.addLayer(layer_GalleriaMarket16);
+        function pop_ErosCity17(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_ErosCity17(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_ErosCity17() {
+            return {
+                pane: 'pane_ErosCity17',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(238,151,224,0.5)',
+            }
+        }
+        map.createPane('pane_ErosCity17');
+        map.getPane('pane_ErosCity17').style.zIndex = 617;
+        map.getPane('pane_ErosCity17').style['mix-blend-mode'] = 'normal';
+    var layer_ErosCity17 = new L.geoJson(json_ErosCity17, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_ErosCity17',
+        onEachFeature: pop_ErosCity17,
+        style: style_ErosCity17
+    });
+        bounds_group.addLayer(layer_ErosCity17);
+        map.addLayer(layer_ErosCity17);
+        function pop_DLFStarMall18(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_DLFStarMall18(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_DLFStarMall18() {
+            return {
+                pane: 'pane_DLFStarMall18',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(109,46,244,0.5)',
+            }
+        }
+        map.createPane('pane_DLFStarMall18');
+        map.getPane('pane_DLFStarMall18').style.zIndex = 618;
+        map.getPane('pane_DLFStarMall18').style['mix-blend-mode'] = 'normal';
+    var layer_DLFStarMall18 = new L.geoJson(json_DLFStarMall18, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_DLFStarMall18',
+        onEachFeature: pop_DLFStarMall18,
+        style: style_DLFStarMall18
+    });
+        bounds_group.addLayer(layer_DLFStarMall18);
+        map.addLayer(layer_DLFStarMall18);
+        function pop_DLFMegaMall19(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_DLFMegaMall19(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_DLFMegaMall19() {
+            return {
+                pane: 'pane_DLFMegaMall19',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(108,178,154,0.5)',
+            }
+        }
+        map.createPane('pane_DLFMegaMall19');
+        map.getPane('pane_DLFMegaMall19').style.zIndex = 619;
+        map.getPane('pane_DLFMegaMall19').style['mix-blend-mode'] = 'normal';
+    var layer_DLFMegaMall19 = new L.geoJson(json_DLFMegaMall19, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_DLFMegaMall19',
+        onEachFeature: pop_DLFMegaMall19,
+        style: style_DLFMegaMall19
+    });
+        bounds_group.addLayer(layer_DLFMegaMall19);
+        map.addLayer(layer_DLFMegaMall19);
+        function pop_DLFCyberHub20(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_DLFCyberHub20(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_DLFCyberHub20() {
+            return {
+                pane: 'pane_DLFCyberHub20',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(234,159,171,0.5)',
+            }
+        }
+        map.createPane('pane_DLFCyberHub20');
+        map.getPane('pane_DLFCyberHub20').style.zIndex = 620;
+        map.getPane('pane_DLFCyberHub20').style['mix-blend-mode'] = 'normal';
+    var layer_DLFCyberHub20 = new L.geoJson(json_DLFCyberHub20, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_DLFCyberHub20',
+        onEachFeature: pop_DLFCyberHub20,
+        style: style_DLFCyberHub20
+    });
+        bounds_group.addLayer(layer_DLFCyberHub20);
+        map.addLayer(layer_DLFCyberHub20);
+        function pop_CentralPlaza21(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_CentralPlaza21(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_CentralPlaza21() {
+            return {
+                pane: 'pane_CentralPlaza21',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(109,90,199,0.5)',
+            }
+        }
+        map.createPane('pane_CentralPlaza21');
+        map.getPane('pane_CentralPlaza21').style.zIndex = 621;
+        map.getPane('pane_CentralPlaza21').style['mix-blend-mode'] = 'normal';
+    var layer_CentralPlaza21 = new L.geoJson(json_CentralPlaza21, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_CentralPlaza21',
+        onEachFeature: pop_CentralPlaza21,
+        style: style_CentralPlaza21
+    });
+        bounds_group.addLayer(layer_CentralPlaza21);
+        map.addLayer(layer_CentralPlaza21);
+        function pop_CelebrationMall22(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_CelebrationMall22(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_CelebrationMall22() {
+            return {
+                pane: 'pane_CelebrationMall22',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(191,95,113,0.5)',
+            }
+        }
+        map.createPane('pane_CelebrationMall22');
+        map.getPane('pane_CelebrationMall22').style.zIndex = 622;
+        map.getPane('pane_CelebrationMall22').style['mix-blend-mode'] = 'normal';
+    var layer_CelebrationMall22 = new L.geoJson(json_CelebrationMall22, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_CelebrationMall22',
+        onEachFeature: pop_CelebrationMall22,
+        style: style_CelebrationMall22
+    });
+        bounds_group.addLayer(layer_CelebrationMall22);
+        map.addLayer(layer_CelebrationMall22);
+        function pop_BaaniSquare23(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_BaaniSquare23(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_BaaniSquare23() {
+            return {
+                pane: 'pane_BaaniSquare23',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(19,251,2,0.5)',
+            }
+        }
+        map.createPane('pane_BaaniSquare23');
+        map.getPane('pane_BaaniSquare23').style.zIndex = 623;
+        map.getPane('pane_BaaniSquare23').style['mix-blend-mode'] = 'normal';
+    var layer_BaaniSquare23 = new L.geoJson(json_BaaniSquare23, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_BaaniSquare23',
+        onEachFeature: pop_BaaniSquare23,
+        style: style_BaaniSquare23
+    });
+        bounds_group.addLayer(layer_BaaniSquare23);
+        map.addLayer(layer_BaaniSquare23);
+        function pop_AnsalPlaza24(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_AnsalPlaza24(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_AnsalPlaza24() {
+            return {
+                pane: 'pane_AnsalPlaza24',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(170,126,205,0.5)',
+            }
+        }
+        map.createPane('pane_AnsalPlaza24');
+        map.getPane('pane_AnsalPlaza24').style.zIndex = 624;
+        map.getPane('pane_AnsalPlaza24').style['mix-blend-mode'] = 'normal';
+    var layer_AnsalPlaza24 = new L.geoJson(json_AnsalPlaza24, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_AnsalPlaza24',
+        onEachFeature: pop_AnsalPlaza24,
+        style: style_AnsalPlaza24
+    });
+        bounds_group.addLayer(layer_AnsalPlaza24);
+        map.addLayer(layer_AnsalPlaza24);
+        function pop_Ambiencemall25(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    layer.setStyle(style_Ambiencemall25(feature));
+
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Ward_No</th>\
+                        <td>' + (feature.properties['Ward_No'] !== null ? Autolinker.link(String(feature.properties['Ward_No'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Employed</th>\
+                        <td>' + (feature.properties['Employed'] !== null ? Autolinker.link(String(feature.properties['Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Population</th>\
+                        <td>' + (feature.properties['Population'] !== null ? Autolinker.link(String(feature.properties['Population'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Employed</th>\
+                        <td>' + (feature.properties['T Employed'] !== null ? Autolinker.link(String(feature.properties['T Employed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Populati</th>\
+                        <td>' + (feature.properties['T Populati'] !== null ? Autolinker.link(String(feature.properties['T Populati'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? Autolinker.link(String(feature.properties['Name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Property V</th>\
+                        <td>' + (feature.properties['Property V'] !== null ? Autolinker.link(String(feature.properties['Property V'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">PurchaseP</th>\
+                        <td>' + (feature.properties['PurchaseP'] !== null ? Autolinker.link(String(feature.properties['PurchaseP'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Value</th>\
+                        <td>' + (feature.properties['Value'] !== null ? Autolinker.link(String(feature.properties['Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">M Value</th>\
+                        <td>' + (feature.properties['M Value'] !== null ? Autolinker.link(String(feature.properties['M Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">F Value</th>\
+                        <td>' + (feature.properties['F Value'] !== null ? Autolinker.link(String(feature.properties['F Value'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Potentia</th>\
+                        <td>' + (feature.properties['T Potentia'] !== null ? Autolinker.link(String(feature.properties['T Potentia'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">T Purchase</th>\
+                        <td>' + (feature.properties['T Purchase'] !== null ? Autolinker.link(String(feature.properties['T Purchase'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Pur.Pow.</th>\
+                        <td>' + (feature.properties['Pur.Pow.'] !== null ? Autolinker.link(String(feature.properties['Pur.Pow.'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">P_Footfall</th>\
+                        <td>' + (feature.properties['P_Footfall'] !== null ? Autolinker.link(String(feature.properties['P_Footfall'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Mall Name</th>\
+                        <td>' + (feature.properties['Mall Name'] !== null ? Autolinker.link(String(feature.properties['Mall Name'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent);
+        }
+
+        function style_Ambiencemall25() {
+            return {
+                pane: 'pane_Ambiencemall25',
+                opacity: 1,
+                color: 'rgba(0,0,0,0.5)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 1,
+                fillColor: 'rgba(129,25,67,0.5)',
+            }
+        }
+        map.createPane('pane_Ambiencemall25');
+        map.getPane('pane_Ambiencemall25').style.zIndex = 625;
+        map.getPane('pane_Ambiencemall25').style['mix-blend-mode'] = 'normal';
+    var layer_Ambiencemall25 = new L.geoJson(json_Ambiencemall25, {
+        attribution: '<a href=""></a>',
+        pane: 'pane_Ambiencemall25',
+        onEachFeature: pop_Ambiencemall25,
+        style: style_Ambiencemall25
+    });
+        bounds_group.addLayer(layer_Ambiencemall25);
+        map.addLayer(layer_Ambiencemall25);
+        var osmGeocoder = new L.Control.OSMGeocoder({
+            collapsed: false,
+            position: 'topright',
+            text: 'Search',
+        });
+        osmGeocoder.addTo(map);
+        var baseMaps = {'OSM B&W': basemap0, 'OSM': basemap1, 'OSM HOT': basemap2};
+        L.control.layers(baseMaps,{'<img src="legend/Ambiencemall25.png" /> Ambience mall': layer_Ambiencemall25,'<img src="legend/AnsalPlaza24.png" /> Ansal Plaza': layer_AnsalPlaza24,'<img src="legend/BaaniSquare23.png" /> Baani Square': layer_BaaniSquare23,'<img src="legend/CelebrationMall22.png" /> Celebration Mall': layer_CelebrationMall22,'<img src="legend/CentralPlaza21.png" /> Central Plaza': layer_CentralPlaza21,'<img src="legend/DLFCyberHub20.png" /> DLF Cyber Hub': layer_DLFCyberHub20,'<img src="legend/DLFMegaMall19.png" /> DLF Mega Mall': layer_DLFMegaMall19,'<img src="legend/DLFStarMall18.png" /> DLF Star Mall': layer_DLFStarMall18,'<img src="legend/ErosCity17.png" /> Eros City': layer_ErosCity17,'<img src="legend/GalleriaMarket16.png" /> Galleria Market': layer_GalleriaMarket16,'<img src="legend/GlobalFoyer15.png" /> Global Foyer': layer_GlobalFoyer15,'<img src="legend/GoodEarth14.png" /> Good Earth': layer_GoodEarth14,'<img src="legend/HongKongBazaar13.png" /> Hong Kong Bazaar': layer_HongKongBazaar13,'<img src="legend/Metropolitan12.png" /> Metropolitan': layer_Metropolitan12,'<img src="legend/MGFMegaCity11.png" /> MGF Mega City': layer_MGFMegaCity11,'<img src="legend/Ninex10.png" /> Ninex': layer_Ninex10,'<img src="legend/OmaxeCityMall9.png" /> Omaxe City Mall': layer_OmaxeCityMall9,'<img src="legend/QutubPlaza8.png" /> Qutub Plaza': layer_QutubPlaza8,'<img src="legend/RahejaMall7.png" /> Raheja Mall': layer_RahejaMall7,'<img src="legend/SaharaMall6.png" /> Sahara Mall': layer_SaharaMall6,'<img src="legend/Sector155.png" /> Sector-15': layer_Sector155,'<img src="legend/Sector294.png" /> Sector-29': layer_Sector294,'<img src="legend/Sector313.png" /> Sector-31': layer_Sector313,'<img src="legend/SouthPointMall2.png" /> South Point Mall': layer_SouthPointMall2,'<img src="legend/UnitechCyberHub1.png" /> Unitech Cyber Hub': layer_UnitechCyberHub1,'<img src="legend/UnitechInfospace0.png" /> Unitech Infospace': layer_UnitechInfospace0,}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
