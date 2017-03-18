@@ -1,4 +1,5 @@
 from partA import app
 
-#app.run(debug=True)
-ALLOWED_HOSTS = ['route2sabya.pythonanywhere.com']
+if __name__ == '__main__':
+    app.run()
+#ALLOWED_HOSTS = ['route2sabya.pythonanywhere.com']

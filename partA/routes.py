@@ -25,10 +25,10 @@ def login_required(f):
     return wrap
 
 """
-    
+
 @app.route('/')
 def home():
-    return render_template('home-.html')
+    return redirect(url_for('signin'))
 
 @app.route('/about')
 def about():
@@ -62,7 +62,7 @@ def testdb():
         return 'It works.'
     else:
         return 'something is broken.'
-    
+
 """
 @app.route('/signup', methods = ['GET', 'POST'])
 def signup():
@@ -76,10 +76,10 @@ def signup():
             db.session.add(newuser)
             db.session.commit()
             session['email'] = newuser.email
-            
-            
+
+
             return redirect(url_for('profile'))
-            
+
             #return "[1] Create a new user [2] sign in theb user [3] redirect to the user's profile"
 
     elif request.method == 'GET':
@@ -95,34 +95,34 @@ def profile():
         return render_template('profile.html')
 
 
-    
-        
+
+
 @app.route('/signin', methods = ['GET','POST'])
 def signin():
     form = SigninForm()
 
-    
+
 
     if request.method == 'POST':
-        
+
         if form.validate() == False:
             #flash('username or password is invalid','error')
             return render_template('signin.html', form=form)
         else:
             #if 'email' in session:
                 #return redirect(url_for('profile'))
-            #else:              
-            
+            #else:
+
             session['email'] = form.email.data
         return redirect(url_for('profile'))
-            
-            
-            
-            
+
+
+
+
 
     elif request.method == 'GET':
         return render_template('signin.html',form=form)
-    
+
 
 @app.route('/signout', methods=['GET','POST'])
 #@login_required
