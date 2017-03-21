@@ -17,7 +17,7 @@ class SignupForm(Form):
     password = PasswordField("Password",[validators.Required("Please enter a password")])
     submit = SubmitField("Create account")
 
-    
+
     def __init__(self, *args,**kw):
         Form.__init__(self, *args,  **kw)
 

@@ -1,11 +1,14 @@
-from partA import app
+from partA import create_app
 from flask import Flask, render_template, request,flash, session, redirect,url_for, g
 from partA.forms import ContactForm, SignupForm, SigninForm
 from flask_mail import Mail, Message
 import jinja2
 from partA.models import db,User
-from functools import wraps
+#from functools import wraps
 
+
+app = create_app()
+app.app_context().push()
 my_loader = jinja2.ChoiceLoader([
     app.jinja_loader,
     jinja2.FileSystemLoader('\flask-app\app\partA\templates'),
@@ -72,10 +75,11 @@ def signup():
             flash("All fields required.")
             return render_template('signup.html',form=form)
         else:
-            newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.password.data)
-            db.session.add(newuser)
-            db.session.commit()
-            session['email'] = newuser.email
+            with app.app_context():
+                newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.password.data)
+                db.session.add(newuser)
+                db.session.commit()
+                session['email'] = newuser.email
 
 
             return redirect(url_for('profile'))
