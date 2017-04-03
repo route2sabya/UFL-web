@@ -16,13 +16,14 @@ app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
 app.config["MAIL_USE_SSL"] = True
 app.config["MAIL_USERNAME"] = 'route2sabya@gmail.com'
-app.config["MAIL_PASSWORD"] = 'sauda365sabya'
+app.config["MAIL_PASSWORD"] = 'qnxbvdojyqbanhih'
 
 
 from partA.models import db
 def create_app():
     #app = Flask(__name__, template_folder='templates')
     db.init_app(app)
+
     return app
 
 
@@ -30,7 +31,10 @@ def create_app():
 
 
 from partA.routes import mail
+
 mail.init_app(app)
+
+#mail.init_app(app)
 
 
 

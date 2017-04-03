@@ -2,7 +2,7 @@
 <html>
 
 <head>
-<style> 
+<style>
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 
 *{margin:0;padding:0;}
@@ -164,7 +164,7 @@ input[type="submit"]:hover{
 
   <meta charset="UTF-8">
 
-  <title>CodePen - Login Form</title>
+  <title>Sign In - UFL</title>
 
     <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}" media="screen" type="text/css"/>
 
@@ -178,7 +178,7 @@ input[type="submit"]:hover{
 		<li><a href="{{url_for('contact')}}">Contact</a></li>
 		<li><a href="#about">About</a></li>
 		</ul>
-		
+
 	{% for message in form.email.errors %}
 	<div class="flash">{{message}}</div>
 	{% endfor %}
@@ -188,7 +188,7 @@ input[type="submit"]:hover{
 	{% endfor %}
 
   <span href="#" class="button" id="toggle-login">Sign In to  Dashboard</span>
-  
+
 
 <div id="login">
   <div id="triangle"></div>

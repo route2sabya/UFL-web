@@ -2,7 +2,7 @@
 <html>
 
 <head>
-<style> 
+<style>
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 
 *{margin:0;padding:0;}
@@ -178,7 +178,7 @@ input[type="submit"]:hover{
 		<li><a href="#contact">Contact</a></li>
 		<li><a href="#about">About</a></li>
 		</ul>
-		
+
 	{% for message in form.email.errors %}
 	<div class="flash">{{message}}</div>
 	{% endfor %}
@@ -188,26 +188,26 @@ input[type="submit"]:hover{
 	{% endfor %}
 
   <span href="#" class="button" id="toggle-login">Sign Up</span>
-  
+
 
 <div id="login">
   <div id="triangle"></div>
-  <h1>Sign in</h1>
+  <h1>Sign up</h1>
   <form action ="{{url_for('signup')}}" method = post>
 	{{ form.hidden_tag()}}
-	
+
 	{{form.firstname.label}}<br>
 	{{form.firstname}}<br>
-	
+
 	{{form.lastname.label}}<br>
 	{{form.lastname}}<br>
-	
+
 	{{form.email.label}}<br>
     {{form.email(placeholder="Email")}}<br>
-	
+
 	{{form.password.label}}<br>
     {{form.password(placeholder="Password")}}<br>
-	
+
     {{form.submit}}<br>
   </form>
 </div>
